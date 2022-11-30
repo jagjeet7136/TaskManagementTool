@@ -35,8 +35,7 @@ public class ProjectService {
     }
 
     public List<Project> findAllProjects() {
-        List<Project> projects = projectRepository.findAll();
-        return projects;
+        return projectRepository.findAll();
     }
 
     public void deleteByProjectId(String projectId) {
