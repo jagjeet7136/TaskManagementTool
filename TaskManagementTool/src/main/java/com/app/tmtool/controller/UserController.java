@@ -3,6 +3,7 @@ package com.app.tmtool.controller;
 import com.app.tmtool.entity.Users;
 import com.app.tmtool.service.MapValidationErrorService;
 import com.app.tmtool.service.UserService;
+import com.app.tmtool.validator.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,8 +24,12 @@ public class UserController {
     @Autowired
     UserService userService;
 
+    @Autowired
+    private UserValidator userValidator;
+
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody Users user, BindingResult bindingResult) {
+        userValidator.validate(user, bindingResult);
         ResponseEntity<?> errorMap = mapValidationErrorService.mapValidationService(bindingResult);
         if(errorMap!=null) {
             return errorMap;
