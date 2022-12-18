@@ -10,8 +10,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Data
@@ -43,6 +45,8 @@ public class Users implements UserDetails {
     @JsonFormat(pattern = "yyyy-mm-dd")
     private Date update_at;
 
+    @OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, mappedBy = "user", orphanRemoval = true)
+    private List<Project> projectList = new ArrayList<>();
 
     @Override
     @JsonIgnore

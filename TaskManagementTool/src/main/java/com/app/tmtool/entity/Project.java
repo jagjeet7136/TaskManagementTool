@@ -1,6 +1,7 @@
 package com.app.tmtool.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedDate;
@@ -42,4 +43,9 @@ public class Project {
     @JsonFormat(pattern = "yyyy-mm-dd")
     private Date updatedAt;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Users user;
+
+    private String projectLeader;
 }
