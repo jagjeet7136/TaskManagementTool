@@ -55,11 +55,12 @@ public class ProjectController {
     }
 
     @PutMapping("")
-    public ResponseEntity<?> updateProject(@Valid @RequestBody Project project, BindingResult bindingResult) {
+    public ResponseEntity<?> updateProject(@Valid @RequestBody Project project, BindingResult bindingResult,
+                                           Principal principal) throws Exception {
         ResponseEntity<?> errorMap = mapValidationErrorService.mapValidationService(bindingResult);
         if(errorMap!=null) {
             return errorMap;
         }
-        return new ResponseEntity<>(projectService.updateProject(project), HttpStatus.OK);
+        return new ResponseEntity<>(projectService.updateProject(project, principal.getName()), HttpStatus.OK);
     }
 }

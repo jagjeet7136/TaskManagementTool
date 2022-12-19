@@ -8,7 +8,6 @@ import com.app.tmtool.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
@@ -53,12 +52,17 @@ public class ProjectService {
         projectRepository.delete(findProjectByIdentifier(projectId, username));
     }
 
-    public Project updateProject(Project project) {
+    public Project updateProject(Project project, String username) throws Exception {
         Project project1 = projectRepository.findByProjectIdentifier(project.getProjectIdentifier().toUpperCase());
 
         if(project1==null) {
             throw new ProjectIdException("Project Id " + project.getProjectIdentifier().toUpperCase() +
                     " do not exists");
+        }
+        else {
+            if(!project1.getProjectLeader().equals(username)) {
+                throw new Exception("Project Not found in your account");
+            }
         }
         project1 = new ModelMapper().map(project, Project.class);
         return projectRepository.save(project1);
