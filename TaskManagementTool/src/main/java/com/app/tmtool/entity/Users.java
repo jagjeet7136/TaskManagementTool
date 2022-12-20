@@ -3,6 +3,7 @@ package com.app.tmtool.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.security.core.GrantedAuthority;
@@ -37,7 +38,7 @@ public class Users implements UserDetails {
     @Transient
     private String confirmPassword;
 
-    @CreatedDate
+    @CreationTimestamp
     @JsonFormat(pattern = "yyyy-mm-dd")
     private Date created_at;
 
