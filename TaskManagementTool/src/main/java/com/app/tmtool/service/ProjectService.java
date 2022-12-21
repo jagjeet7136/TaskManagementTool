@@ -1,8 +1,10 @@
 package com.app.tmtool.service;
 
+import com.app.tmtool.entity.Backlog;
 import com.app.tmtool.entity.Project;
 import com.app.tmtool.entity.Users;
 import com.app.tmtool.exceptions.ProjectIdException;
+import com.app.tmtool.repository.BacklogRepository;
 import com.app.tmtool.repository.ProjectRepository;
 import com.app.tmtool.repository.UserRepository;
 import org.modelmapper.ModelMapper;
@@ -19,12 +21,19 @@ public class ProjectService {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    BacklogRepository backlogRepository;
+
     public Project saveOrUpdate(Project project, String username) {
         try {
             Users user = userRepository.findByUsername(username);
             project.setUser(user);
             project.setProjectLeader(user.getUsername());
             project.setProjectIdentifier(project.getProjectIdentifier().toUpperCase());
+            Backlog backlog = new Backlog();
+            project.setBacklog(backlog);
+            backlog.setProject(project);
+            backlog.setProjectIdentifier(project.getProjectIdentifier().toUpperCase());
             return projectRepository.save(project);
         }catch (Exception ex) {
             throw new ProjectIdException("Project Id " + project.getProjectIdentifier().toUpperCase() +
@@ -64,6 +73,7 @@ public class ProjectService {
                 throw new Exception("Project Not found in your account");
             }
         }
+        project.setBacklog(backlogRepository.findByProjectIdentifier(project.getProjectIdentifier()));
         project1 = new ModelMapper().map(project, Project.class);
         return projectRepository.save(project1);
     }
