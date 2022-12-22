@@ -3,6 +3,7 @@ package com.app.tmtool.service;
 import com.app.tmtool.entity.Backlog;
 import com.app.tmtool.entity.Project;
 import com.app.tmtool.entity.Users;
+import com.app.tmtool.exceptions.NoProjectException;
 import com.app.tmtool.exceptions.ProjectIdException;
 import com.app.tmtool.repository.BacklogRepository;
 import com.app.tmtool.repository.ProjectRepository;
@@ -41,14 +42,14 @@ public class ProjectService {
         }
     }
 
-    public Project findProjectByIdentifier(String projectIdentifier, String username) throws Exception {
+    public Project findProjectByIdentifier(String projectIdentifier, String username){
         Project project = projectRepository.findByProjectIdentifier(projectIdentifier.toUpperCase());
         if(project==null) {
             throw new ProjectIdException("Project Id " + projectIdentifier.toUpperCase() +
                     " do not exists");
         }
         if(!project.getProjectLeader().equals(username)) {
-            throw new Exception("Project Not found in your account");
+            throw new NoProjectException("Project Not found in your account");
         }
         return project;
     }
@@ -57,11 +58,11 @@ public class ProjectService {
         return projectRepository.findAllByProjectLeader(username);
     }
 
-    public void deleteByProjectId(String projectId, String username) throws Exception {
+    public void deleteByProjectId(String projectId, String username){
         projectRepository.delete(findProjectByIdentifier(projectId, username));
     }
 
-    public Project updateProject(Project project, String username) throws Exception {
+    public Project updateProject(Project project, String username){
         Project project1 = projectRepository.findByProjectIdentifier(project.getProjectIdentifier().toUpperCase());
 
         if(project1==null) {
@@ -70,7 +71,7 @@ public class ProjectService {
         }
         else {
             if(!project1.getProjectLeader().equals(username)) {
-                throw new Exception("Project Not found in your account");
+                throw new NoProjectException("Project Not found in your account");
             }
         }
         project.setBacklog(backlogRepository.findByProjectIdentifier(project.getProjectIdentifier()));
