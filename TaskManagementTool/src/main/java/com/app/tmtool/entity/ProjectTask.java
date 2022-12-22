@@ -1,5 +1,6 @@
 package com.app.tmtool.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -32,7 +33,6 @@ public class ProjectTask {
 
     private Date dueDate;
 
-//    @ManyToOne
     @Column(updatable = false)
     private String projectIdentifier;
 
@@ -41,6 +41,11 @@ public class ProjectTask {
 
     @UpdateTimestamp
     private Date updated_at;
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
+    @JoinColumn(name = "backlog_id", updatable = false)
+    @JsonIgnore
+    private Backlog backlog;
 
     @Override
     public String toString() {
@@ -136,5 +141,13 @@ public class ProjectTask {
 
     public void setUpdated_at(Date updated_at) {
         this.updated_at = updated_at;
+    }
+
+    public Backlog getBacklog() {
+        return backlog;
+    }
+
+    public void setBacklog(Backlog backlog) {
+        this.backlog = backlog;
     }
 }
