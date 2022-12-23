@@ -52,6 +52,7 @@ public class Project {
     private String projectLeader;
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "project")
+    @JsonIgnore
     private Backlog backlog;
 
     public Long getId() {
