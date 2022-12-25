@@ -1,6 +1,6 @@
 package com.app.tmtool.controller;
 
-import com.app.tmtool.entity.Users;
+import com.app.tmtool.entity.User;
 import com.app.tmtool.payload.JWTLoginSuccessResponse;
 import com.app.tmtool.payload.LoginRequest;
 import com.app.tmtool.security.JwtTokenProvider;
@@ -42,14 +42,14 @@ public class UserController {
     private AuthenticationManager authenticationManager;
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody Users user, BindingResult bindingResult) {
+    public ResponseEntity<?> registerUser(@Valid @RequestBody User user, BindingResult bindingResult) {
         userValidator.validate(user, bindingResult);
         ResponseEntity<?> errorMap = mapValidationErrorService.mapValidationService(bindingResult);
         if(errorMap!=null) {
             return errorMap;
         }
 
-        Users newUser = userService.saveUser(user);
+        User newUser = userService.saveUser(user);
         return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
 

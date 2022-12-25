@@ -1,6 +1,6 @@
 package com.app.tmtool.validator;
 
-import com.app.tmtool.entity.Users;
+import com.app.tmtool.entity.User;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -11,12 +11,12 @@ public class UserValidator implements Validator {
 
     @Override
     public boolean supports(Class<?> clazz) {
-        return Users.class.equals(clazz);
+        return User.class.equals(clazz);
     }
 
     @Override
     public void validate(Object target, Errors errors) {
-        Users user = (Users) target;
+        User user = (User) target;
         if(user.getPassword().length()<6) {
             errors.rejectValue("password",  "Length",
                     "Password must be at least 6 characters");

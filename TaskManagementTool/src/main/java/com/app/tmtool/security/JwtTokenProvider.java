@@ -1,6 +1,6 @@
 package com.app.tmtool.security;
 
-import com.app.tmtool.entity.Users;
+import com.app.tmtool.entity.User;
 import io.jsonwebtoken.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -12,7 +12,7 @@ import java.util.Map;
 public class JwtTokenProvider {
 
     public String generateToken(Authentication authentication) {
-        Users users = (Users) authentication.getPrincipal();
+        User users = (User) authentication.getPrincipal();
         Date now = new Date(System.currentTimeMillis());
         Date expiryDate = new Date(now.getTime()+SecurityConstants.EXPIRATION_TIME);
 

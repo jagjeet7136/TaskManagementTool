@@ -1,17 +1,16 @@
 package com.app.tmtool.repository;
 
-import com.app.tmtool.entity.Users;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.app.tmtool.entity.User;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends CrudRepository<Users, Long> {
+public interface UserRepository extends CrudRepository<User, Long> {
 
-    Users findByUsername(String username);
+    User findByUsername(String username);
 
-    Users getById(Long id);
+    User getById(Long id);
 
-    Optional<Users> findById(Long id);
+    Optional<User> findById(Long id);
 }

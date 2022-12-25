@@ -1,6 +1,6 @@
 package com.app.tmtool.security;
 
-import com.app.tmtool.entity.Users;
+import com.app.tmtool.entity.User;
 import com.app.tmtool.service.CustomUserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -30,7 +30,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String jwt = getJWTFromRequest(request);
             if(StringUtils.hasText(jwt) && jwtTokenProvider.validateToken(jwt)) {
                 Long userId = jwtTokenProvider.getUserIdFromJWT(jwt);
-                Users userDetails = customUserDetailService.loadUserById(userId);
+                User userDetails = customUserDetailService.loadUserById(userId);
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken
                         (userDetails, null, Collections.emptyList());
                 authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

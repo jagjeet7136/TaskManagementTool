@@ -1,6 +1,6 @@
 package com.app.tmtool.service;
 
-import com.app.tmtool.entity.Users;
+import com.app.tmtool.entity.User;
 import com.app.tmtool.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,7 +17,7 @@ public class CustomUserDetailService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Users users = userRepository.findByUsername(username);
+        User users = userRepository.findByUsername(username);
         if(users==null) {
             throw new UsernameNotFoundException("User not found");
         }
@@ -25,8 +25,8 @@ public class CustomUserDetailService implements UserDetailsService {
     }
 
     @Transactional
-    public Users loadUserById(Long id) {
-        Users users = userRepository.getById(id);
+    public User loadUserById(Long id) {
+        User users = userRepository.getById(id);
         if(users==null) {
             throw new UsernameNotFoundException("User not found");
         }

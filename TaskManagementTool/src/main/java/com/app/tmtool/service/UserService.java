@@ -1,6 +1,6 @@
 package com.app.tmtool.service;
 
-import com.app.tmtool.entity.Users;
+import com.app.tmtool.entity.User;
 import com.app.tmtool.exceptions.UserNameAlreadyExistsException;
 import com.app.tmtool.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +16,10 @@ public class UserService {
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public Users saveUser(Users newUser) {
+    public User saveUser(User newUser) {
         newUser.setPassword(bCryptPasswordEncoder.encode(newUser.getPassword()));
         try {
-            Users savedUser = userRepository.save(newUser);
+            User savedUser = userRepository.save(newUser);
             savedUser.setConfirmPassword("");
             return savedUser;
         }

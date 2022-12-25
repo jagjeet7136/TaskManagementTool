@@ -47,7 +47,7 @@ public class Project {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
-    private Users user;
+    private User user;
 
     private String projectLeader;
 
@@ -119,11 +119,11 @@ public class Project {
         this.updatedAt = updatedAt;
     }
 
-    public Users getUser() {
+    public User getUser() {
         return user;
     }
 
-    public void setUser(Users user) {
+    public void setUser(User user) {
         this.user = user;
     }
 

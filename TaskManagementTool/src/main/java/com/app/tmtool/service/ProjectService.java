@@ -2,7 +2,7 @@ package com.app.tmtool.service;
 
 import com.app.tmtool.entity.Backlog;
 import com.app.tmtool.entity.Project;
-import com.app.tmtool.entity.Users;
+import com.app.tmtool.entity.User;
 import com.app.tmtool.exceptions.NoProjectException;
 import com.app.tmtool.exceptions.ProjectIdException;
 import com.app.tmtool.repository.BacklogRepository;
@@ -27,7 +27,7 @@ public class ProjectService {
 
     public Project saveOrUpdate(Project project, String username) {
         try {
-            Users user = userRepository.findByUsername(username);
+            User user = userRepository.findByUsername(username);
             project.setUser(user);
             project.setProjectLeader(user.getUsername());
             project.setProjectIdentifier(project.getProjectIdentifier().toUpperCase());
