@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -24,20 +25,20 @@ public class BacklogController {
 
     @PostMapping("/{backlogId}")
     public ResponseEntity<?> addProjectTaskToBacklog(@Valid @RequestBody ProjectTask projectTask, BindingResult
-            bindingResult, @PathVariable String backlogId) {
+            bindingResult, @PathVariable String backlogId, Principal principal) {
 
         ResponseEntity<?> errorMap = mapValidationErrorService.mapValidationService(bindingResult);
         if(errorMap!=null) {
             return errorMap;
         }
 
-        ProjectTask projectTask1 = projectTaskService.addProjectTask(backlogId, projectTask);
+        ProjectTask projectTask1 = projectTaskService.addProjectTask(backlogId, projectTask, principal.getName());
         return new ResponseEntity<ProjectTask>(projectTask1, HttpStatus.CREATED);
     }
 
     @GetMapping("/{backlogId}")
-    public ResponseEntity<List<ProjectTask>> getProjectBacklog(@PathVariable String backlogId) {
-        return new ResponseEntity<>(projectTaskService.findBacklogById(backlogId), HttpStatus.OK);
+    public ResponseEntity<List<ProjectTask>> getProjectBacklog(@PathVariable String backlogId, Principal principal) {
+        return new ResponseEntity<>(projectTaskService.findBacklogById(backlogId, principal.getName()), HttpStatus.OK);
     }
 
 }
