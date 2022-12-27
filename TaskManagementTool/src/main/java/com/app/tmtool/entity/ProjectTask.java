@@ -19,7 +19,7 @@ public class ProjectTask {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(updatable = false)
+    @Column(updatable = false, unique = true)
     private String projectSequence;
 
     @NotBlank(message = "Please include a project summary")

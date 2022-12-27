@@ -50,6 +50,10 @@ public class ProjectTaskService {
         }
     }
 
+    public ProjectTask findProjectTaskByProjectSequence(String backlogId, String sequence) {
+        return projectTaskRepository.findByProjectSequence(sequence);
+    }
+
     public List<ProjectTask> findBacklogById(String backlogId, String username) {
         Project project = projectService.findProjectByIdentifier(backlogId, username);
         return projectTaskRepository.findByProjectIdentifierOrderByPriority(backlogId);
