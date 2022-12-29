@@ -6,6 +6,7 @@ import com.app.tmtool.entity.ProjectTask;
 import com.app.tmtool.exceptions.NoProjectException;
 import com.app.tmtool.repository.BacklogRepository;
 import com.app.tmtool.repository.ProjectTaskRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -68,5 +69,11 @@ public class ProjectTaskService {
     public List<ProjectTask> findBacklogById(String backlogId, String username) {
         Project project = projectService.findProjectByIdentifier(backlogId, username);
         return projectTaskRepository.findByProjectIdentifierOrderByPriority(backlogId);
+    }
+
+    public ProjectTask updateByProjectSequence(ProjectTask projectTask, String backlogId, String projectTaskId) {
+        ProjectTask task = projectTaskRepository.findByProjectSequence(projectTaskId);
+        task = new ModelMapper().map(projectTask, ProjectTask.class);
+        return projectTaskRepository.save(task);
     }
 }
