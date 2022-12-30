@@ -72,8 +72,17 @@ public class ProjectTaskService {
     }
 
     public ProjectTask updateByProjectSequence(ProjectTask projectTask, String backlogId, String projectTaskId) {
-        ProjectTask task = projectTaskRepository.findByProjectSequence(projectTaskId);
+        ProjectTask task = findProjectTaskByProjectSequence(backlogId, projectTaskId);
         task = new ModelMapper().map(projectTask, ProjectTask.class);
         return projectTaskRepository.save(task);
+    }
+
+    public void deleteProjectTaskByProjectSequence(String backlogId, String projectTaskId) {
+        ProjectTask projectTask = findProjectTaskByProjectSequence(backlogId, projectTaskId);
+        Backlog backlog = projectTask.getBacklog();
+        List<ProjectTask> projectTaskList = backlog.getProjectTaskList();
+        projectTaskList.remove(projectTask);
+        backlogRepository.save(backlog);
+        projectTaskRepository.delete(projectTask);
     }
 }
