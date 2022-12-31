@@ -17,19 +17,19 @@ public class CustomUserDetailService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User users = userRepository.findByUsername(username);
-        if(users==null) {
+        User user = userRepository.findByUsername(username);
+        if(user==null) {
             throw new UsernameNotFoundException("User not found");
         }
-        return users;
+        return user;
     }
 
     @Transactional
     public User loadUserById(Long id) {
-        User users = userRepository.getById(id);
-        if(users==null) {
+        User user = userRepository.getById(id);
+        if(user==null) {
             throw new UsernameNotFoundException("User not found");
         }
-        return users;
+        return user;
     }
 }

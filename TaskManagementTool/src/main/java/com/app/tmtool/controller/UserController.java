@@ -27,10 +27,10 @@ import javax.validation.Valid;
 public class UserController {
 
     @Autowired
-    MapValidationErrorService mapValidationErrorService;
+    private MapValidationErrorService mapValidationErrorService;
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @Autowired
     private UserValidator userValidator;
