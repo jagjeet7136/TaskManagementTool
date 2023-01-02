@@ -25,42 +25,37 @@ public class ProjectTaskService {
 
     public ProjectTask addProjectTask(String projectIdentifier, ProjectTask projectTask, String username) {
         Project project = projectService.findProjectByIdentifier(projectIdentifier, username);
-        try {
-            Backlog backlog = backlogRepository.findByProjectIdentifier(projectIdentifier);
+        Backlog backlog = backlogRepository.findByProjectIdentifier(projectIdentifier);
 
-            projectTask.setBacklog(backlog);
-            Integer backlogSequence = backlog.getPTSequence();
-            backlogSequence++;
-            backlog.setPTSequence(backlogSequence);
+        projectTask.setBacklog(backlog);
+        Integer backlogSequence = backlog.getPTSequence();
+        backlogSequence++;
+        backlog.setPTSequence(backlogSequence);
 
-            projectTask.setProjectSequence(projectIdentifier + "-" + backlogSequence);
-            projectTask.setProjectIdentifier(projectIdentifier);
+        projectTask.setProjectSequence(projectIdentifier + "-" + backlogSequence);
+        projectTask.setProjectIdentifier(projectIdentifier);
 
-            if(projectTask.getPriority()==null/* || projectTask.getPriority()==0*/) {
-                projectTask.setPriority(3);
-            }
-
-            if(projectTask.getStatus()==null || projectTask.getStatus().equals("")) {
-                projectTask.setStatus("TO_DO");
-            }
-
-            return projectTaskRepository.save(projectTask);
+        if (projectTask.getPriority() == null || projectTask.getPriority() == 0) {
+            projectTask.setPriority(3);
         }
-        catch (Exception exception) {
-            throw new NoProjectException("Project Not found");
+
+        if (projectTask.getStatus() == null || projectTask.getStatus().equals("")) {
+            projectTask.setStatus("TO_DO");
         }
+
+        return projectTaskRepository.save(projectTask);
     }
 
     public ProjectTask findProjectTaskByProjectSequence(String backlogId, String sequence) {
         Backlog backlog = backlogRepository.findByProjectIdentifier(backlogId);
-        if(backlog==null) {
+        if (backlog == null) {
             throw new NoProjectException("Project with ID: " + backlogId + " does not exist");
         }
         ProjectTask projectTask = projectTaskRepository.findByProjectSequence(sequence);
-        if(projectTask==null) {
+        if (projectTask == null) {
             throw new NoProjectException("Project Task " + sequence + " not found");
         }
-        if(!projectTask.getProjectIdentifier().equals(backlogId)) {
+        if (!projectTask.getProjectIdentifier().equals(backlogId)) {
             throw new NoProjectException("Project Task " + sequence + " does not exists in project: " + backlogId);
         }
         return projectTask;
