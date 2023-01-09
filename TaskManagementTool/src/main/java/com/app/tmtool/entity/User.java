@@ -33,7 +33,6 @@ public class User implements UserDetails {
     @NotBlank(message = "Please enter your full name")
     private String fullName;
 
-    @NotBlank(message = "Password is required")
     private String password;
 
     @Transient
@@ -46,6 +45,9 @@ public class User implements UserDetails {
     @UpdateTimestamp
     @JsonFormat(pattern = "yyyy-mm-dd")
     private Date update_at;
+
+    @Column(unique = true)
+    private String sub;
 
     @OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, mappedBy = "user", orphanRemoval = true)
     private List<Project> projectList = new ArrayList<>();
@@ -144,5 +146,13 @@ public class User implements UserDetails {
 
     public void setProjectList(List<Project> projectList) {
         this.projectList = projectList;
+    }
+
+    public String getSub() {
+        return sub;
+    }
+
+    public void setSub(String sub) {
+        this.sub = sub;
     }
 }

@@ -16,10 +16,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
@@ -67,5 +64,10 @@ public class UserController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = SecurityConstants.TOKEN_PREFIX + jwtTokenProvider.generateToken(authentication);
         return ResponseEntity.ok(new JWTLoginSuccessResponse(true, token));
+    }
+
+    @GetMapping("")
+    public ResponseEntity<?> getAccessToken(@RequestParam String googleIdToken) throws Exception {
+        return new ResponseEntity<>(userService.getAccessToken(googleIdToken), HttpStatus.OK);
     }
 }

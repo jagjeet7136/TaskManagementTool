@@ -12,15 +12,34 @@ import java.util.Map;
 public class JwtTokenProvider {
 
     public String generateToken(Authentication authentication) {
-        User users = (User) authentication.getPrincipal();
+        User user = (User) authentication.getPrincipal();
         Date now = new Date(System.currentTimeMillis());
         Date expiryDate = new Date(now.getTime()+SecurityConstants.EXPIRATION_TIME);
 
-        String userId = Long.toString(users.getId());
+        String userId = Long.toString(user.getId());
         Map<String, Object> claims = new HashMap<>();
-        claims.put("id", Long.toString(users.getId()));
-        claims.put("username", users.getUsername());
-        claims.put("fullName", users.getFullName());
+        claims.put("id", Long.toString(user.getId()));
+        claims.put("username", user.getUsername());
+        claims.put("fullName", user.getFullName());
+
+        return Jwts.builder()
+                .setSubject(userId)
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(expiryDate)
+                .signWith(SignatureAlgorithm.HS512, SecurityConstants.SECRET)
+                .compact();
+    }
+
+    public String getJWTToken(Long id, String fullName, String email) {
+        Date now = new Date(System.currentTimeMillis());
+        Date expiryDate = new Date(now.getTime()+SecurityConstants.EXPIRATION_TIME);
+
+        String userId = Long.toString(id);
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("id", userId);
+        claims.put("username", email);
+        claims.put("fullName", fullName);
 
         return Jwts.builder()
                 .setSubject(userId)
