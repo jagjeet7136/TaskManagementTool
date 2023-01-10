@@ -18,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 
 @RestController
 @RequestMapping("/api/users")
@@ -62,12 +63,12 @@ public class UserController {
                 loginRequest.getUsername(), loginRequest.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String token = SecurityConstants.TOKEN_PREFIX + jwtTokenProvider.generateToken(authentication);
+        String token = SecurityConstants.TOKEN_PREFIX + jwtTokenProvider.helperGenerateToken(authentication);
         return ResponseEntity.ok(new JWTLoginSuccessResponse(true, token));
     }
 
     @GetMapping("")
-    public ResponseEntity<?> getAccessToken(@RequestParam String googleIdToken) throws Exception {
+    public ResponseEntity<?> getAccessToken(@RequestParam @NotBlank String googleIdToken) throws Exception {
         return new ResponseEntity<>(userService.getAccessToken(googleIdToken), HttpStatus.OK);
     }
 }

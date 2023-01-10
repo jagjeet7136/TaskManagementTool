@@ -11,16 +11,28 @@ import java.util.Map;
 @Component
 public class JwtTokenProvider {
 
-    public String generateToken(Authentication authentication) {
-        User user = (User) authentication.getPrincipal();
+    public String generateToken(Long id, String name, String email, Authentication... authentication) {
+        String userId;
+        String username;
+        String fullName;
+        if(authentication.length>0) {
+            User user = (User) authentication[0].getPrincipal();
+            userId = Long.toString(user.getId());
+            username = user.getUsername();
+            fullName = user.getFullName();
+        }
+        else {
+            userId = Long.toString(id);
+            username = email;
+            fullName = name;
+        }
         Date now = new Date(System.currentTimeMillis());
         Date expiryDate = new Date(now.getTime()+SecurityConstants.EXPIRATION_TIME);
 
-        String userId = Long.toString(user.getId());
         Map<String, Object> claims = new HashMap<>();
-        claims.put("id", Long.toString(user.getId()));
-        claims.put("username", user.getUsername());
-        claims.put("fullName", user.getFullName());
+        claims.put("id", userId);
+        claims.put("username", username);
+        claims.put("fullName", fullName);
 
         return Jwts.builder()
                 .setSubject(userId)
@@ -31,23 +43,8 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public String getJWTToken(Long id, String fullName, String email) {
-        Date now = new Date(System.currentTimeMillis());
-        Date expiryDate = new Date(now.getTime()+SecurityConstants.EXPIRATION_TIME);
-
-        String userId = Long.toString(id);
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("id", userId);
-        claims.put("username", email);
-        claims.put("fullName", fullName);
-
-        return Jwts.builder()
-                .setSubject(userId)
-                .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(expiryDate)
-                .signWith(SignatureAlgorithm.HS512, SecurityConstants.SECRET)
-                .compact();
+    public String helperGenerateToken(Authentication authentication) {
+        return generateToken(null, null, null, authentication);
     }
 
     public boolean validateToken(String token) {

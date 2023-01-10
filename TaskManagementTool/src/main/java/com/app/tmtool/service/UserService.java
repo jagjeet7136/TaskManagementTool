@@ -1,6 +1,7 @@
 package com.app.tmtool.service;
 
 import com.app.tmtool.entity.User;
+import com.app.tmtool.exceptions.UnauthorizedException;
 import com.app.tmtool.exceptions.UserNameAlreadyExistsException;
 import com.app.tmtool.repository.UserRepository;
 import com.app.tmtool.security.JwtTokenProvider;
@@ -12,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.Collections;
-import java.util.Date;
 
 @Service
 public class UserService {
@@ -24,7 +24,7 @@ public class UserService {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
-    JwtTokenProvider jwtTokenProvider;
+    private JwtTokenProvider jwtTokenProvider;
 
     public User saveUser(User newUser) {
         newUser.setPassword(bCryptPasswordEncoder.encode(newUser.getPassword()));
@@ -48,20 +48,21 @@ public class UserService {
         try {
             idToken = verifier.verify(googleIdToken);
         }
-        catch (Exception ex){
-            throw new Exception(ex.toString());
+        catch (Exception ex) {
+            throw new UnauthorizedException("Unauthorized");
         }
-        if(idToken == null )
-            throw new Exception("Id token is null");
+        if(idToken == null ) {
+            throw new UnauthorizedException("Unauthorized");
+        }
 
         GoogleIdToken.Payload payload = idToken.getPayload();
 
-        if(!payload.getEmailVerified())
-            throw new Exception("Id token is null");
+        if(!payload.getEmailVerified()) {
+            throw new UnauthorizedException("Unauthorized");
+        }
 
         User user = userRepository.findBySub(payload.getSubject());
-        Long userId ;
-        Date presentDate = new Date();
+        Long userId;
         if(user == null) {
             user = new User();
             user.setSub(payload.getSubject());
@@ -69,7 +70,7 @@ public class UserService {
             user.setFullName(payload.get("name").toString());
         }
 
-        userId = userRepository.save(user).getId();
-        return jwtTokenProvider.getJWTToken(userId , user.getFullName() ,payload.getEmail());
+        userId = (userRepository.save(user)).getId();
+        return jwtTokenProvider.generateToken(userId, user.getFullName(), payload.getEmail());
     }
 }

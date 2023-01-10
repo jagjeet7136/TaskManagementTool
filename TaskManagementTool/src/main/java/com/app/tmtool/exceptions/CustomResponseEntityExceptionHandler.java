@@ -32,4 +32,21 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
         NoProjectExceptionResponse exceptionResponse = new NoProjectExceptionResponse(ex.getMessage());
         return new ResponseEntity<>(exceptionResponse, HttpStatus.CREATED);
     }
+
+    @ExceptionHandler
+    public final ResponseEntity<Object> handlePasswordsEmptyException(PasswordsEmptyException passwordsEmptyException,
+                                                                      WebRequest webRequest) {
+        PasswordEmptyExceptionResponse passwordEmptyExceptionResponse = new PasswordEmptyExceptionResponse(
+                passwordsEmptyException.getMessage());
+        return new ResponseEntity<>(passwordEmptyExceptionResponse, HttpStatus.CREATED);
+    }
+
+    @ExceptionHandler
+    public final ResponseEntity<Object> handleUnauthorizedException(UnauthorizedException unauthorizedException,
+                                                                      WebRequest webRequest) {
+        UnauthorizedExceptionResponse unauthorizedExceptionResponse = new UnauthorizedExceptionResponse(
+                unauthorizedException.getMessage());
+        return new ResponseEntity<>(unauthorizedExceptionResponse, HttpStatus.CREATED);
+    }
 }
+
