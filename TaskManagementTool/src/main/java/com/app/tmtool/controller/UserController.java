@@ -69,6 +69,7 @@ public class UserController {
 
     @GetMapping("")
     public ResponseEntity<?> getAccessToken(@RequestParam @NotBlank String googleIdToken) throws Exception {
-        return new ResponseEntity<>(userService.getAccessToken(googleIdToken), HttpStatus.OK);
+        return new ResponseEntity<>(new JWTLoginSuccessResponse(true, userService.getAccessToken(googleIdToken)),
+                HttpStatus.OK);
     }
 }
