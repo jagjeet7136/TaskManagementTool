@@ -7,6 +7,8 @@ import com.app.tmtool.exceptions.NoProjectException;
 import com.app.tmtool.repository.BacklogRepository;
 import com.app.tmtool.repository.ProjectTaskRepository;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -22,6 +24,8 @@ public class ProjectTaskService {
 
     @Autowired
     private ProjectTaskRepository projectTaskRepository;
+
+    private static final Logger logger = LoggerFactory.getLogger(ProjectTaskService.class);
 
     public ProjectTask addProjectTask(String projectIdentifier, ProjectTask projectTask, String username) {
         Project project = projectService.findProjectByIdentifier(projectIdentifier, username);
@@ -53,6 +57,7 @@ public class ProjectTaskService {
             throw new NoProjectException("Project Task " + sequence + " not found");
         }
         if (!projectTask.getProjectIdentifier().equals(backlogId)) {
+            logger.error("Wrong project sequence {} {} ", projectTask, sequence);
             throw new NoProjectException("Project Task " + sequence + " does not exists in project: " + backlogId);
         }
         return projectTask;

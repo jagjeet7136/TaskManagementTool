@@ -9,6 +9,8 @@ import com.app.tmtool.repository.BacklogRepository;
 import com.app.tmtool.repository.ProjectRepository;
 import com.app.tmtool.repository.UserRepository;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -25,6 +27,8 @@ public class ProjectService {
     @Autowired
     BacklogRepository backlogRepository;
 
+    private static final Logger logger = LoggerFactory.getLogger(ProjectService.class);
+
     public Project saveOrUpdate(Project project, String username) {
         try {
             User user = userRepository.findByUsername(username);
@@ -37,6 +41,7 @@ public class ProjectService {
             backlog.setProjectIdentifier(project.getProjectIdentifier().toUpperCase());
             return projectRepository.save(project);
         }catch (Exception ex) {
+            logger.error("Project identifier already exists {}", project.getProjectIdentifier());
             throw new ProjectIdException("Project Id " + project.getProjectIdentifier().toUpperCase() +
                     " already exists");
         }
@@ -45,6 +50,7 @@ public class ProjectService {
     public Project findProjectByIdentifier(String projectIdentifier, String username){
         Project project = projectRepository.findByProjectIdentifier(projectIdentifier.toUpperCase());
         if(project==null) {
+            logger.error("Project identifier does not exists {}", projectIdentifier);
             throw new ProjectIdException("Project Id " + projectIdentifier.toUpperCase() +
                     " do not exists");
         }
@@ -66,6 +72,7 @@ public class ProjectService {
         Project project1 = projectRepository.findByProjectIdentifier(project.getProjectIdentifier().toUpperCase());
 
         if(project1==null) {
+            logger.error("Project identifier does not exists {}", project.getProjectIdentifier());
             throw new ProjectIdException("Project Id " + project.getProjectIdentifier().toUpperCase() +
                     " do not exists");
         }
