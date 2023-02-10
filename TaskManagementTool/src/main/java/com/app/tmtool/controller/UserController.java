@@ -8,6 +8,8 @@ import com.app.tmtool.security.SecurityConstants;
 import com.app.tmtool.service.MapValidationErrorService;
 import com.app.tmtool.service.UserService;
 import com.app.tmtool.validator.UserValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,6 +41,8 @@ public class UserController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody User user, BindingResult bindingResult) {
         userValidator.validate(user, bindingResult);
@@ -48,6 +52,7 @@ public class UserController {
         }
 
         User newUser = userService.saveUser(user);
+        logger.info("Saved user details: {}", newUser);
         return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
 
@@ -64,6 +69,7 @@ public class UserController {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = SecurityConstants.TOKEN_PREFIX + jwtTokenProvider.helperGenerateToken(authentication);
+        logger.info("Token generated: {}", token);
         return ResponseEntity.ok(new JWTLoginSuccessResponse(true, token));
     }
 

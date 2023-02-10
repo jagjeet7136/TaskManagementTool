@@ -3,6 +3,8 @@ package com.app.tmtool.controller;
 import com.app.tmtool.entity.ProjectTask;
 import com.app.tmtool.service.MapValidationErrorService;
 import com.app.tmtool.service.ProjectTaskService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,12 +25,15 @@ public class BacklogController {
     @Autowired
     MapValidationErrorService mapValidationErrorService;
 
+    private static final Logger logger = LoggerFactory.getLogger(BacklogController.class);
+
     @PostMapping("/{backlogId}")
     public ResponseEntity<?> addProjectTaskToBacklog(@Valid @RequestBody ProjectTask projectTask, BindingResult
             bindingResult, @PathVariable String backlogId, Principal principal) {
 
         ResponseEntity<?> errorMap = mapValidationErrorService.mapValidationService(bindingResult);
         if(errorMap!=null) {
+            logger.error("validation errors: {}", projectTask);
             return errorMap;
         }
 
@@ -59,6 +64,7 @@ public class BacklogController {
 
         ProjectTask updatedTask = projectTaskService.updateByProjectSequence(projectTask, backlogId, projectTaskId,
                 principal.getName());
+        logger.info("Updated task details: {}", updatedTask);
         return new ResponseEntity<>(updatedTask, HttpStatus.OK);
     }
 
