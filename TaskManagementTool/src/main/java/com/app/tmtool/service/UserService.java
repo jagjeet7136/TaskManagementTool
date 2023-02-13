@@ -10,8 +10,6 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -30,8 +28,6 @@ public class UserService {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
-    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
-
     public User saveUser(User newUser) {
         newUser.setPassword(bCryptPasswordEncoder.encode(newUser.getPassword()));
         try {
@@ -40,7 +36,7 @@ public class UserService {
             return savedUser;
         }
         catch (Exception ex) {
-            logger.error("some error occur: {} ", ex.getMessage());
+            log.error("some error occur: {} ", ex.getMessage());
             throw new UserNameAlreadyExistsException("Username " + newUser.getUsername() + " already exists");
         }
     }
@@ -56,18 +52,18 @@ public class UserService {
             idToken = verifier.verify(googleIdToken);
         }
         catch (Exception ex) {
-            logger.error("token is not valid {}", googleIdToken);
+            log.error("token is not valid {}", googleIdToken);
             throw new UnauthorizedException("Unauthorized");
         }
         if(idToken == null ) {
-            logger.error("token is not valid {}", googleIdToken);
+            log.error("token is not valid {}", googleIdToken);
             throw new UnauthorizedException("Unauthorized");
         }
 
         GoogleIdToken.Payload payload = idToken.getPayload();
 
         if(!payload.getEmailVerified()) {
-            logger.error("email not verified {}", payload.getEmail());
+            log.error("email not verified {}", payload.getEmail());
             throw new UnauthorizedException("Unauthorized");
         }
 
